@@ -98,6 +98,20 @@ const Header = () => {
             </Link>
           </div>
         </div>
+        {/* Display filtered products */}
+        {searchTerm && (
+          <div className={classes.search_results}>
+            {filteredProducts?.length > 0 ? (
+              filteredProducts.map((product) => (
+                <div key={product.id} className={classes.search_item}>
+                  <p>{product.name}</p>
+                </div>
+              ))
+            ) : (
+              <p>No products found</p>
+            )}
+          </div>
+        )}
       </section>
       <LowerHeader />
     </section>
