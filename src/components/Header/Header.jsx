@@ -11,10 +11,15 @@ import { DataContext } from "../DataProvider/DataProvider";
 import { auth } from "../../Utility/firebase";
 
 const Header = () => {
-  const [{ user, basket }, dispatch] = useContext(DataContext);
+  const [{ user, basket, products }, dispatch] = useContext(DataContext);
+  const [searchTerm, setSearchTerm] = useState("");
   const totalItem = basket?.reduce((amount, item) => {
     return item.amount + amount;
   }, 0);
+
+  const filteredProducts = products?.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <section className={classes.fixed}>
@@ -45,7 +50,14 @@ const Header = () => {
               <option value="">All</option>
             </select>
 
-            <input type="text" name="" id="" placeholder="search product" />
+            <input
+              type="text"
+              name=""
+              id=""
+              placeholder="search product"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
             <BsSearch size={38} />
           </div>
           {/* other section */}
