@@ -1,31 +1,33 @@
 import React, { useContext, useState } from "react";
 import classes from "./Header.module.css";
 import { Link } from "react-router-dom";
-
 import { SlLocationPin } from "react-icons/sl";
 import { BsSearch } from "react-icons/bs";
-
 import { BiCart } from "react-icons/bi";
 import LowerHeader from "./LowerHeader";
 import { DataContext } from "../DataProvider/DataProvider";
 import { auth } from "../../Utility/firebase";
 
 const Header = () => {
-  const [{ user, basket, products }, dispatch] = useContext(DataContext);
-  const [searchTerm, setSearchTerm] = useState("");
-  const totalItem = basket?.reduce((amount, item) => {
-    return item.amount + amount;
-  }, 0);
+  const [{ user, basket }, dispatch] = useContext(DataContext);
+  const [searchTerm, setSearchTerm] = useState(""); 
 
-  const filteredProducts = products?.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const totalItem = basket?.reduce((amount, item) => item.amount + amount, 0);
+
+  
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    dispatch({
+      type: "SET_SEARCH_TERM",
+      payload: e.target.value,
+    });
+  };
 
   return (
     <section className={classes.fixed}>
       <section>
         <div className={classes.header_container}>
-          {/* logo */}
+          {/* Logo */}
           <div className={classes.logo_container}>
             <Link to="/">
               <img
@@ -33,7 +35,7 @@ const Header = () => {
                 alt="amazon logo"
               />
             </Link>
-            {/* delivery */}
+            {/* Delivery */}
             <div className={classes.delivery}>
               <span>
                 <SlLocationPin />
@@ -44,7 +46,8 @@ const Header = () => {
               </div>
             </div>
           </div>
-          {/* search section*/}
+
+          {/* Search Section */}
           <div className={classes.search}>
             <select name="" id="">
               <option value="">All</option>
@@ -52,15 +55,14 @@ const Header = () => {
 
             <input
               type="text"
-              name=""
-              id=""
-              placeholder="search product"
+              placeholder="Search products..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearch} 
             />
             <BsSearch size={38} />
           </div>
-          {/* other section */}
+
+          {/* Other Section */}
           <div className={classes.order_container}>
             <Link to="" className={classes.language}>
               <img
@@ -71,7 +73,6 @@ const Header = () => {
                 <option value="">EN</option>
               </select>
             </Link>
-            {/* three components */}
             <Link to={!user && "/auth"}>
               <div>
                 {user ? (
@@ -91,27 +92,12 @@ const Header = () => {
               <p>returns</p>
               <span>& Orders</span>
             </Link>
-            {/* cart */}
             <Link to="/cart" className={classes.cart}>
               <BiCart size={35} />
               <span>{totalItem}</span>
             </Link>
           </div>
         </div>
-        {/* Display filtered products */}
-        {searchTerm && (
-          <div className={classes.search_results}>
-            {filteredProducts?.length > 0 ? (
-              filteredProducts.map((product) => (
-                <div key={product.id} className={classes.search_item}>
-                  <p>{product.name}</p>
-                </div>
-              ))
-            ) : (
-              <p>No products found</p>
-            )}
-          </div>
-        )}
       </section>
       <LowerHeader />
     </section>
